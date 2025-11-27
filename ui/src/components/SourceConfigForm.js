@@ -1,14 +1,14 @@
 import React from "react";
 
 const SOURCE_TYPES = [
-  { value: "file", label: "File (CSV/JSON/Parquet/Avro)" },
+  { value: "file", label: "File (CSV/JSON/Parquet/Avro/Excel)" },
   { value: "bigquery", label: "BigQuery Table" },
   { value: "oracle", label: "Oracle" },
   { value: "postgres", label: "Postgres" },
   { value: "hive", label: "Hive" },
 ];
 
-export default function SourceConfigForm({ label, value, onChange }) {
+export default function SourceConfigForm({ label, value, onChange, onFileChange }) {
   const handleFieldChange = (field, fieldValue) => {
     onChange({ ...value, [field]: fieldValue });
   };
@@ -61,6 +61,10 @@ export default function SourceConfigForm({ label, value, onChange }) {
       };
     }
     onChange(base);
+    // reset any previously selected file when type changes
+    if (onFileChange) {
+      onFileChange(null);
+    }
   };
 
   const renderFieldsForType = () => {
@@ -70,7 +74,13 @@ export default function SourceConfigForm({ label, value, onChange }) {
     if (t === "file") {
       return (
         <>
-          <label>File path (local / GCS / HDFS)</label>
+          <label>Upload local file (CSV / JSON / Parquet / Avro / Excel)</label>
+          <input
+            type="file"
+            onChange={(e) => onFileChange && onFileChange(e.target.files[0] || null)}
+          />
+
+          <label>File path (optional, GCS / HDFS / local)</label>
           <input
             type="text"
             value={value.path || ""}
@@ -204,7 +214,14 @@ export default function SourceConfigForm({ label, value, onChange }) {
   };
 
   return (
-    <div style={{ border: "1px solid #ccc", padding: 12, borderRadius: 8, marginBottom: 16 }}>
+    <div
+      style={{
+        border: "1px solid #ccc",
+        padding: 12,
+        borderRadius: 8,
+        marginBottom: 16,
+      }}
+    >
       <h4>{label}</h4>
       <label>Source Type</label>
       <select value={value?.type || ""} onChange={handleTypeChange}>
@@ -216,7 +233,14 @@ export default function SourceConfigForm({ label, value, onChange }) {
         ))}
       </select>
 
-      <div style={{ marginTop: 8, display: "flex", flexDirection: "column", gap: 8 }}>
+      <div
+        style={{
+          marginTop: 8,
+          display: "flex",
+          flexDirection: "column",
+          gap: 8,
+        }}
+      >
         {renderFieldsForType()}
       </div>
     </div>

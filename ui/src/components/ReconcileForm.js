@@ -6,6 +6,9 @@ export default function ReconcileForm({ setResult }) {
   const [sourceA, setSourceA] = useState({ type: "" });
   const [sourceB, setSourceB] = useState({ type: "" });
 
+  const [fileA, setFileA] = useState(null);
+  const [fileB, setFileB] = useState(null);
+
   const [absThreshold, setAbsThreshold] = useState(0.01);
   const [relThreshold, setRelThreshold] = useState(0.001);
 
@@ -43,25 +46,59 @@ export default function ReconcileForm({ setResult }) {
       return copy;
     };
 
-    const payload = {
-      dataset_a: normalizeSource(sourceA),
-      dataset_b: normalizeSource(sourceB),
-      thresholds: {
-        abs: Number(absThreshold),
-        rel: Number(relThreshold),
-      },
-      // Entities are optional; can be added later in the UI
-      entities: [],
+    const datasetA = normalizeSource(sourceA);
+    const datasetB = normalizeSource(sourceB);
+
+    const thresholds = {
+      abs: Number(absThreshold),
+      rel: Number(relThreshold),
     };
 
-    const res = await callRecon(payload);
-    setResult(res);
+    const entities = []; // same as before; extend later if needed
+
+    const formData = new FormData();
+    formData.append("dataset_a", JSON.stringify(datasetA));
+    formData.append("dataset_b", JSON.stringify(datasetB));
+    formData.append("thresholds", JSON.stringify(thresholds));
+    formData.append("entities", JSON.stringify(entities));
+
+    if (fileA) {
+      formData.append("fileA", fileA);
+    }
+    if (fileB) {
+      formData.append("fileB", fileB);
+    }
+
+    try {
+      const res = await callRecon(formData);
+      setResult(res);
+    } catch (err) {
+      console.error("Reconciliation error:", err);
+      alert("Reconciliation failed. Check console for details.");
+    }
   };
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 16, marginBottom: 24 }}>
-      <SourceConfigForm label="Dataset A" value={sourceA} onChange={setSourceA} />
-      <SourceConfigForm label="Dataset B" value={sourceB} onChange={setSourceB} />
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        gap: 16,
+        marginBottom: 24,
+      }}
+    >
+      <SourceConfigForm
+        label="Dataset A"
+        value={sourceA}
+        onChange={setSourceA}
+        onFileChange={setFileA}
+      />
+      <SourceConfigForm
+        label="Dataset B"
+        value={sourceB}
+        onChange={setSourceB}
+        onFileChange={setFileB}
+      />
 
       <div style={{ display: "flex", gap: 16, alignItems: "center" }}>
         <div>

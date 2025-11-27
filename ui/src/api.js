@@ -1,11 +1,17 @@
-export async function callRecon(payload) {
-  const res = await fetch("/api/reconcile", {
+// src/api/index.js (or similar)
+const API_BASE =
+  process.env.REACT_APP_API_BASE || "http://localhost:8000/api";
+
+export async function callRecon(formData) {
+  const res = await fetch(`${API_BASE}/reconcile`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload)
+    body: formData, // DO NOT manually set Content-Type here
   });
+
   if (!res.ok) {
-    throw new Error("Recon failed");
+    const text = await res.text();
+    throw new Error(`Reconcile failed: ${res.status} ${text}`);
   }
+
   return res.json();
 }
