@@ -1,7 +1,6 @@
 // src/api/index.js (or similar)
 const API_BASE =
-  process.env.REACT_APP_API_BASE || "http://localhost:8000/api";
-
+  process.env.REACT_APP_API_BASE || "https://recon-backend-947423379682.us-central1.run.app";
 export async function callRecon(formData) {
   const res = await fetch(`${API_BASE}/reconcile`, {
     method: "POST",
