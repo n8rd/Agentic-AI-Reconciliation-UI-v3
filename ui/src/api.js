@@ -23,3 +23,15 @@ export async function callRecon(payloadOrFormData, useFiles = false) {
   return res.json();
 }
 
+export async function approveRecon(payload) {
+  // second step: continue graph with approval info
+  const resp = await fetch("/reconcile/approve", {
+    // again, adjust path if your backend is /api/reconcile/approve
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+  if (!resp.ok) throw new Error("Approval reconciliation request failed");
+  return resp.json();
+}
+
