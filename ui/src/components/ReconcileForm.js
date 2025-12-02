@@ -1,3 +1,4 @@
+// frontend/src/components/ReconcileForm.js
 import React, { useState } from "react";
 import { callRecon } from "../api";
 import SourceConfigForm from "./SourceConfigForm";
@@ -49,12 +50,13 @@ export default function ReconcileForm({ setResult }) {
     const datasetA = normalizeSource(sourceA);
     const datasetB = normalizeSource(sourceB);
 
+    // Thresholds picked from the screen
     const thresholds = {
       abs: Number(absThreshold),
       rel: Number(relThreshold),
     };
 
-    const entities = []; // same as before; extend later if needed
+    const entities = []; // extend later if needed
 
     const formData = new FormData();
     formData.append("dataset_a", JSON.stringify(datasetA));
@@ -70,11 +72,12 @@ export default function ReconcileForm({ setResult }) {
     }
 
     try {
-      const res = await callRecon(formData);
+      // IMPORTANT: second arg true => send multipart/form-data
+      const res = await callRecon(formData, true);
       setResult(res);
     } catch (err) {
       console.error("Reconciliation error:", err);
-      alert("Reconciliation failed. Check console for details.");
+      alert("Reconciliation failed. Please check the browser console for details.");
     }
   };
 
