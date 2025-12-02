@@ -24,14 +24,16 @@ export async function callRecon(payloadOrFormData, useFiles = false) {
 }
 
 export async function approveRecon(payload) {
-  // second step: continue graph with approval info
-  const resp = await fetch("/reconcile/approve", {
-    // again, adjust path if your backend is /api/reconcile/approve
+  const resp = await fetch(`${API_BASE_URL}/reconcile/approve`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
   });
-  if (!resp.ok) throw new Error("Approval reconciliation request failed");
+  if (!resp.ok) {
+    const txt = await resp.text();
+    console.error("approveRecon error response:", resp.status, txt);
+    throw new Error("Approval reconciliation request failed");
+  }
   return resp.json();
 }
 
