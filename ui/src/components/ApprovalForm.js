@@ -24,6 +24,7 @@ export default function ApprovalForm({ pendingState, onApproved }) {
   };
 
   const handleSubmit = async () => {
+    console.log("[ApprovalForm] Approve clicked");
     setError("");
     setLoading(true);
     try {
@@ -45,14 +46,21 @@ export default function ApprovalForm({ pendingState, onApproved }) {
         thresholds,
         entities,
         approval: {
-            approved_matches,  // matches Approval.approved_matches
+          approved_matches, // matches Approval.approved_matches in backend
         },
       };
 
+      console.log("[ApprovalForm] Payload for /reconcile/approve:", payload);
+
       const finalResult = await approveRecon(payload);
+
+      console.log(
+        "[ApprovalForm] Final result from backend /reconcile/approve:",
+        finalResult
+      );
       onApproved(finalResult);
     } catch (e) {
-      console.error(e);
+      console.error("[ApprovalForm] Error in approval flow:", e);
       setError("Failed to run reconciliation with approvals.");
     } finally {
       setLoading(false);
@@ -127,6 +135,7 @@ export default function ApprovalForm({ pendingState, onApproved }) {
       )}
 
       <button
+        type="button"              {/* important so it never triggers a form submit */}
         style={{ marginTop: 12 }}
         onClick={handleSubmit}
         disabled={loading}

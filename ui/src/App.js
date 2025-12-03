@@ -5,16 +5,18 @@ import ResultView from "./components/ResultView";
 import ApprovalForm from "./components/ApprovalForm";
 
 export default function App() {
-  const [pendingResult, setPendingResult] = useState(null); // first step result
-  const [finalResult, setFinalResult] = useState(null);     // after approval
+  // Single source of truth for whatever the backend last returned
+  const [result, setResult] = useState(null);
 
   const handleReconcileResult = (res) => {
-    // when user hits "Run reconciliation" in ReconcileForm
-    setFinalResult(null);     // reset any previous final result
-    setPendingResult(res);    // store the PENDING_APPROVAL state
+    console.log("[App] Received result from /reconcile:", res);
+    setResult(res); // typically this will have status: "PENDING_APPROVAL"
   };
 
-  const effectiveResult = finalResult || pendingResult;
+  const handleApprovedResult = (res) => {
+    console.log("[App] Received final result from /reconcile/approve:", res);
+    setResult(res); // overwrite with final state (e.g. status: "COMPLETED")
+  };
 
   return (
     <div style={{ padding: 20 }}>
@@ -24,19 +26,15 @@ export default function App() {
       <ReconcileForm setResult={handleReconcileResult} />
 
       {/* Step 2: approval UI if backend says PENDING_APPROVAL */}
-      {pendingResult && pendingResult.status === "PENDING_APPROVAL" && (
+      {result && result.status === "PENDING_APPROVAL" && (
         <ApprovalForm
-          pendingState={pendingResult}
-          onApproved={(res) => {
-            setFinalResult(res);
-            setPendingResult(res); // so ResultView sees the final status
-          }}
+          pendingState={result}
+          onApproved={handleApprovedResult}
         />
       )}
 
-      {/* Step 3: display final result (and optionally also show for PENDING_APPROVAL) */}
-      <ResultView result={effectiveResult} />
+      {/* Step 3: show whatever the latest result is */}
+      <ResultView result={result} />
     </div>
   );
 }
-
