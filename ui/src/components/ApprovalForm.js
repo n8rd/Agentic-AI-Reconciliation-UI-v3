@@ -135,7 +135,7 @@ export default function ApprovalForm({ pendingState, onApproved }) {
       )}
 
       <button
-        type="button"              {/* important so it never triggers a form submit */}
+        type="button"
         style={{ marginTop: 12 }}
         onClick={handleSubmit}
         disabled={loading}
