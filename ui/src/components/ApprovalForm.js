@@ -37,10 +37,15 @@ export default function ApprovalForm({ pendingState, onApproved }) {
         return;
       }
 
+      const { dataset_a, dataset_b, thresholds, entities } = pendingState;
+
       const payload = {
-        ...pendingState,
+        dataset_a,
+        dataset_b,
+        thresholds,
+        entities,
         approval: {
-          approved_matches,
+            approved_matches,  // matches Approval.approved_matches
         },
       };
 
