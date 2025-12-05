@@ -1,20 +1,21 @@
 :root {
-  --bg: #f5f7fa;
-  --bg-panel: #ffffff;
-  --bg-panel-soft: #f9fafb;
+  /* Light blue workspace */
+  --bg: #e5f0ff;
+  --bg-panel: #f9fbff;
+  --bg-panel-soft: #edf2ff;
 
-  --border-soft: #d1d5db;
-  --border-strong: #cbd5e1;
+  --border-soft: #bfdbfe;
+  --border-strong: #60a5fa;
 
-  --text-main: #111827;
-  --text-muted: #6b7280;
-  --text-light: #9ca3af;
+  --text-main: #0f172a;
+  --text-muted: #4b5563;
+  --text-light: #6b7280;
 
   --accent: #2563eb;
   --accent-light: #dbeafe;
-  --accent-soft: rgba(37, 99, 235, 0.12);
+  --accent-soft: rgba(37, 99, 235, 0.16);
 
-  --pill-bg: #e5e7eb;
+  --pill-bg: #dbeafe;
   --pill-warning: #fef3c7;
 
   --success: #15803d;
@@ -26,12 +27,12 @@
   --radius-md: 10px;
 
   --shadow-soft: 0 4px 10px rgba(15, 23, 42, 0.08);
-  --shadow-card: 0 6px 16px rgba(15, 23, 42, 0.12);
+  --shadow-card: 0 8px 20px rgba(30, 64, 175, 0.22);
 }
 
 body {
   margin: 0;
-  background: var(--bg);
+  background: linear-gradient(180deg, #e0edff 0%, #eef3ff 40%, #f9fbff 100%);
   color: var(--text-main);
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
@@ -52,7 +53,7 @@ body {
   justify-content: space-between;
   padding: 12px 24px;
   border-bottom: 1px solid var(--border-soft);
-  background: #ffffff;
+  background: linear-gradient(90deg, #eff4ff 0%, #ffffff 30%, #eff6ff 100%);
   position: sticky;
   top: 0;
   z-index: 10;
@@ -72,10 +73,10 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--accent-light);
-  color: var(--accent);
+  background: radial-gradient(circle at 30% 0, #3b82f6, #1d4ed8);
+  color: #eff6ff;
   font-size: 20px;
-  box-shadow: none;
+  box-shadow: 0 0 18px rgba(37, 99, 235, 0.6);
 }
 
 .app-title {
@@ -100,8 +101,8 @@ body {
   border-radius: 999px;
   padding: 6px 12px;
   font-size: 11px;
-  color: var(--text-muted);
-  border: 1px solid var(--border-soft);
+  color: var(--text-main);
+  border: 1px solid var(--border-strong);
 }
 
 /* Main layout */
@@ -115,7 +116,6 @@ body {
   max-width: 1180px;
   margin: 0 auto;
   box-sizing: border-box;
-  background: var(--bg);
 }
 
 .app-column {
@@ -136,7 +136,7 @@ body {
   margin-top: 16px;
   background: var(--bg-panel-soft);
   border-color: var(--border-soft);
-  box-shadow: none;
+  box-shadow: 0 4px 10px rgba(148, 163, 184, 0.25);
 }
 
 .app-panel-header {
