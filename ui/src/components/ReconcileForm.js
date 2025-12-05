@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { callRecon } from "../api";
 import SourceConfigForm from "./SourceConfigForm";
+import "./ReconcileForm.css";
 
 export default function ReconcileForm({ setResult }) {
   const [sourceA, setSourceA] = useState({ type: "" });
@@ -12,6 +13,8 @@ export default function ReconcileForm({ setResult }) {
 
   const [absThreshold, setAbsThreshold] = useState(0.01);
   const [relThreshold, setRelThreshold] = useState(0.001);
+
+  const [isRunning, setIsRunning] = useState(false);
 
   const handleSubmit = async () => {
     if (!sourceA.type || !sourceB.type) {
@@ -72,59 +75,121 @@ export default function ReconcileForm({ setResult }) {
     }
 
     try {
+      setIsRunning(true);
       // IMPORTANT: second arg true => send multipart/form-data
       const res = await callRecon(formData, true);
       setResult(res);
     } catch (err) {
       console.error("Reconciliation error:", err);
-      alert("Reconciliation failed. Please check the browser console for details.");
+      alert(
+        "Reconciliation failed. Please check the browser console for details."
+      );
+    } finally {
+      setIsRunning(false);
     }
   };
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        gap: 16,
-        marginBottom: 24,
-      }}
-    >
-      <SourceConfigForm
-        label="Dataset A"
-        value={sourceA}
-        onChange={setSourceA}
-        onFileChange={setFileA}
-      />
-      <SourceConfigForm
-        label="Dataset B"
-        value={sourceB}
-        onChange={setSourceB}
-        onFileChange={setFileB}
-      />
+    <div className="rf-root">
+      {/* Dataset cards */}
+      <div className="rf-datasets">
+        <div className="rf-dataset-card">
+          <div className="rf-dataset-header">
+            <div className="rf-dataset-badge rf-dataset-badge-a">A</div>
+            <div>
+              <div className="rf-dataset-title">Dataset A</div>
+              <div className="rf-dataset-subtitle">
+                Reference / left-hand dataset
+              </div>
+            </div>
+          </div>
 
-      <div style={{ display: "flex", gap: 16, alignItems: "center" }}>
-        <div>
-          <label>Absolute difference threshold</label>
-          <input
-            type="number"
-            step="0.0001"
-            value={absThreshold}
-            onChange={(e) => setAbsThreshold(e.target.value)}
+          <SourceConfigForm
+            label="Dataset A"
+            value={sourceA}
+            onChange={setSourceA}
+            onFileChange={setFileA}
           />
         </div>
-        <div>
-          <label>Relative difference threshold</label>
-          <input
-            type="number"
-            step="0.0001"
-            value={relThreshold}
-            onChange={(e) => setRelThreshold(e.target.value)}
+
+        <div className="rf-dataset-card">
+          <div className="rf-dataset-header">
+            <div className="rf-dataset-badge rf-dataset-badge-b">B</div>
+            <div>
+              <div className="rf-dataset-title">Dataset B</div>
+              <div className="rf-dataset-subtitle">
+                Comparison / right-hand dataset
+              </div>
+            </div>
+          </div>
+
+          <SourceConfigForm
+            label="Dataset B"
+            value={sourceB}
+            onChange={setSourceB}
+            onFileChange={setFileB}
           />
         </div>
       </div>
 
-      <button onClick={handleSubmit}>Run Reconciliation</button>
+      {/* Threshold section */}
+      <div className="rf-threshold-panel">
+        <div className="rf-threshold-header">
+          <div>
+            <div className="rf-threshold-title">Numeric thresholds</div>
+            <div className="rf-threshold-subtitle">
+              Control how strict the comparison is for numeric columns.
+            </div>
+          </div>
+        </div>
+
+        <div className="rf-threshold-grid">
+          <div className="rf-field">
+            <label className="rf-label">Absolute difference threshold</label>
+            <input
+              type="number"
+              step="0.0001"
+              value={absThreshold}
+              onChange={(e) => setAbsThreshold(e.target.value)}
+              className="rf-input"
+            />
+            <div className="rf-helper">
+              Maximum absolute difference allowed (e.g. 0.01 = ±0.01).
+            </div>
+          </div>
+
+          <div className="rf-field">
+            <label className="rf-label">Relative difference threshold</label>
+            <input
+              type="number"
+              step="0.0001"
+              value={relThreshold}
+              onChange={(e) => setRelThreshold(e.target.value)}
+              className="rf-input"
+            />
+            <div className="rf-helper">
+              Maximum relative difference allowed (e.g. 0.001 = 0.1%).
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Actions */}
+      <div className="rf-actions">
+        <div className="rf-actions-text">
+          After you run reconciliation, preview, approval, and final results
+          will appear in the right-hand panel.
+        </div>
+        <button
+          type="button"
+          onClick={handleSubmit}
+          disabled={isRunning}
+          className={`rf-run-btn ${isRunning ? "rf-run-btn-disabled" : ""}`}
+        >
+          {isRunning && <span className="rf-spinner" />}
+          {isRunning ? "Running reconciliation..." : "Run reconciliation"}
+        </button>
+      </div>
     </div>
   );
 }

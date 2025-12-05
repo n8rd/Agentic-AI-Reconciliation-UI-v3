@@ -1,17 +1,18 @@
 // frontend/src/components/ApprovalForm.js
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { approveRecon } from "../api";
+import "./ApprovalForm.css";
 
 export default function ApprovalForm({ pendingState, onApproved }) {
-  // Initialise local state from backend suggestions
+  const initialMatches = pendingState.schema_mapping?.matches || [];
+
   const [mappings, setMappings] = useState(
-    pendingState.schema_mapping.matches.map((m) => ({
+    initialMatches.map((m) => ({
       ...m,
-      // auto-select higher confidence mappings if you like
+      // auto-approve anything over 0.5 confidence
       approved: m.confidence >= 0.5,
     }))
   );
-
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -24,9 +25,9 @@ export default function ApprovalForm({ pendingState, onApproved }) {
   };
 
   const handleSubmit = async () => {
-    console.log("[ApprovalForm] Approve clicked");
     setError("");
     setLoading(true);
+
     try {
       const approved_matches = mappings
         .filter((m) => m.approved)
@@ -46,18 +47,21 @@ export default function ApprovalForm({ pendingState, onApproved }) {
         thresholds,
         entities,
         approval: {
-          approved_matches, // matches Approval.approved_matches in backend
+          approved_matches,
         },
       };
 
-      console.log("[ApprovalForm] Payload for /reconcile/approve:", payload);
+      console.log(
+        "[ApprovalForm] Payload for /reconcile/approve:",
+        payload
+      );
 
       const finalResult = await approveRecon(payload);
-
       console.log(
-        "[ApprovalForm] Final result from backend /reconcile/approve:",
+        "[ApprovalForm] Final result from /reconcile/approve:",
         finalResult
       );
+
       onApproved(finalResult);
     } catch (e) {
       console.error("[ApprovalForm] Error in approval flow:", e);
@@ -67,81 +71,155 @@ export default function ApprovalForm({ pendingState, onApproved }) {
     }
   };
 
+  // Samples (if backend sends them)
+  const dfASample = pendingState.df_a_sample;
+  const dfBSample = pendingState.df_b_sample;
+
+  // Unmapped columns based on columns_a / columns_b vs matches
+  const { unmappedA, unmappedB } = useMemo(() => {
+    const colsA = pendingState.columns_a || [];
+    const colsB = pendingState.columns_b || [];
+    const usedA = new Set(initialMatches.map((m) => m.a_col));
+    const usedB = new Set(initialMatches.map((m) => m.b_col));
+
+    return {
+      unmappedA: colsA.filter((c) => !usedA.has(c)),
+      unmappedB: colsB.filter((c) => !usedB.has(c)),
+    };
+  }, [pendingState.columns_a, pendingState.columns_b, initialMatches]);
+
   return (
-    <div style={{ marginTop: 20, padding: 12, border: "1px solid #ccc" }}>
-      <h3>Step 2: Approve Column Mappings</h3>
-
-      <table
-        style={{ borderCollapse: "collapse", marginTop: 10, width: "100%" }}
-      >
-        <thead>
-          <tr>
-            <th style={{ border: "1px solid #ddd", padding: 6 }}>Use?</th>
-            <th style={{ border: "1px solid #ddd", padding: 6 }}>
-              Dataset A column
-            </th>
-            <th style={{ border: "1px solid #ddd", padding: 6 }}>
-              Dataset B column
-            </th>
-            <th style={{ border: "1px solid #ddd", padding: 6 }}>
-              Confidence
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {mappings.map((m, idx) => (
-            <tr key={`${m.a_col}-${m.b_col}-${idx}`}>
-              <td style={{ border: "1px solid #ddd", padding: 6 }}>
-                <input
-                  type="checkbox"
-                  checked={m.approved}
-                  onChange={() => toggleApproved(idx)}
-                />
-              </td>
-              <td style={{ border: "1px solid #ddd", padding: 6 }}>
-                {m.a_col}
-              </td>
-              <td style={{ border: "1px solid #ddd", padding: 6 }}>
-                {m.b_col}
-              </td>
-              <td style={{ border: "1px solid #ddd", padding: 6 }}>
-                {m.confidence.toFixed(2)}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-
-      {/* Optional: show sample data for context */}
-      <div style={{ marginTop: 16, display: "flex", gap: 16 }}>
-        <div style={{ flex: 1 }}>
-          <h4>Dataset A Sample</h4>
-          <pre style={{ maxHeight: 200, overflow: "auto" }}>
-            {JSON.stringify(pendingState.df_a_sample, null, 2)}
-          </pre>
+    <div className="af-root">
+      <div className="af-header">
+        <div>
+          <h3 className="af-title">Step 2 · Approve column mappings</h3>
+          <p className="af-subtitle">
+            Review suggested column pairs, select which ones to apply, then run
+            full reconciliation.
+          </p>
         </div>
-        <div style={{ flex: 1 }}>
-          <h4>Dataset B Sample</h4>
-          <pre style={{ maxHeight: 200, overflow: "auto" }}>
-            {JSON.stringify(pendingState.df_b_sample, null, 2)}
-          </pre>
-        </div>
+        <span className="af-pill">Pending approval</span>
       </div>
 
-      {error && (
-        <div style={{ marginTop: 10, color: "red" }}>
-          {error}
+      {/* Mappings table */}
+      <div className="af-table-wrapper">
+        <table className="af-table">
+          <thead>
+            <tr>
+              <th className="af-col-use">Use?</th>
+              <th>Dataset A column</th>
+              <th>Dataset B column</th>
+              <th className="af-col-type">Type</th>
+              <th className="af-col-confidence">Confidence</th>
+            </tr>
+          </thead>
+          <tbody>
+            {mappings.map((m, idx) => (
+              <tr key={`${m.a_col}-${m.b_col}-${idx}`}>
+                <td className="af-col-use">
+                  <input
+                    type="checkbox"
+                    checked={!!m.approved}
+                    onChange={() => toggleApproved(idx)}
+                  />
+                </td>
+                <td>{m.a_col}</td>
+                <td>{m.b_col}</td>
+                <td className="af-col-type">
+                  {m.type ? (
+                    <span className={`af-type-pill af-type-${m.type}`}>
+                      {m.type}
+                    </span>
+                  ) : (
+                    "—"
+                  )}
+                </td>
+                <td className="af-col-confidence">
+                  {m.confidence != null
+                    ? m.confidence.toFixed(2)
+                    : "—"}
+                </td>
+              </tr>
+            ))}
+            {mappings.length === 0 && (
+              <tr>
+                <td colSpan={5} className="af-empty-row">
+                  No suggested mappings returned from the backend.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Unmapped columns (if any) */}
+      {(unmappedA.length > 0 || unmappedB.length > 0) && (
+        <div className="af-unmapped">
+          {unmappedA.length > 0 && (
+            <div className="af-unmapped-block">
+              <div className="af-unmapped-title">Unmapped columns in Dataset A</div>
+              <div className="af-unmapped-chips">
+                {unmappedA.map((c) => (
+                  <span key={c} className="af-unmapped-chip">
+                    {c}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+          {unmappedB.length > 0 && (
+            <div className="af-unmapped-block">
+              <div className="af-unmapped-title">Unmapped columns in Dataset B</div>
+              <div className="af-unmapped-chips">
+                {unmappedB.map((c) => (
+                  <span key={c} className="af-unmapped-chip">
+                    {c}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       )}
 
-      <button
-        type="button"
-        style={{ marginTop: 12 }}
-        onClick={handleSubmit}
-        disabled={loading}
-      >
-        {loading ? "Running reconciliation..." : "Approve & Run Reconciliation"}
-      </button>
+      {/* Optional: sample snippets for context */}
+      {(dfASample || dfBSample) && (
+        <div className="af-samples">
+          {dfASample && (
+            <div className="af-sample-card">
+              <div className="af-sample-header">Dataset A sample</div>
+              <pre className="af-sample-code">
+                {JSON.stringify(dfASample, null, 2)}
+              </pre>
+            </div>
+          )}
+          {dfBSample && (
+            <div className="af-sample-card">
+              <div className="af-sample-header">Dataset B sample</div>
+              <pre className="af-sample-code">
+                {JSON.stringify(dfBSample, null, 2)}
+              </pre>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Error + action */}
+      <div className="af-footer">
+        {error && <div className="af-error">{error}</div>}
+
+        <button
+          type="button"
+          className={`af-approve-btn ${
+            loading ? "af-approve-btn-disabled" : ""
+          }`}
+          onClick={handleSubmit}
+          disabled={loading}
+        >
+          {loading && <span className="af-spinner" />}
+          {loading ? "Running reconciliation..." : "Approve & Run Reconciliation"}
+        </button>
+      </div>
     </div>
   );
 }

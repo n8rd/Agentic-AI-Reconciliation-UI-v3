@@ -1,4 +1,6 @@
+// frontend/src/components/SourceConfigForm.js
 import React from "react";
+import "./SourceConfigForm.css";
 
 const SOURCE_TYPES = [
   { value: "file", label: "File (CSV/JSON/Parquet/Avro/Excel)" },
@@ -9,16 +11,19 @@ const SOURCE_TYPES = [
 ];
 
 export default function SourceConfigForm({ label, value, onChange, onFileChange }) {
+  const source = value || {};
+
   const handleFieldChange = (field, fieldValue) => {
-    onChange({ ...value, [field]: fieldValue });
+    onChange({ ...source, [field]: fieldValue });
   };
 
   const handleTypeChange = (e) => {
     const type = e.target.value;
-    // Reset to a sane default for that type
+    // Reset to sane defaults for the chosen type (matches backend expectations)
     let base = { type };
+
     if (type === "file") {
-      base = { type: "file", path: "" };
+      base = { type: "file", path: "", format: "" };
     } else if (type === "bigquery") {
       base = {
         type: "bigquery",
@@ -60,153 +65,239 @@ export default function SourceConfigForm({ label, value, onChange, onFileChange 
         columns: "",
       };
     }
+
     onChange(base);
-    // reset any previously selected file when type changes
+
+    // Clear selected file when type changes
     if (onFileChange) {
       onFileChange(null);
     }
   };
 
   const renderFieldsForType = () => {
-    if (!value?.type) return null;
-    const t = value.type;
+    const t = source.type;
+    if (!t) return null;
 
     if (t === "file") {
       return (
-        <>
-          <label>Upload local file (CSV / JSON / Parquet / Avro / Excel)</label>
-          <input
-            type="file"
-            onChange={(e) => onFileChange && onFileChange(e.target.files[0] || null)}
-          />
+        <div className="scf-block scf-block-file">
+          <div className="scf-field">
+            <label className="scf-label">{label} sample file</label>
+            <input
+              type="file"
+              className="scf-input scf-file"
+              accept=".csv,.json,.parquet,.avro,.xlsx,.xls"
+              onChange={(e) => {
+                const f = e.target.files && e.target.files[0];
+                if (onFileChange) onFileChange(f || null);
+              }}
+            />
+            <div className="scf-helper">
+              Upload a small representative sample; backend will create a temp
+              table and infer schema.
+            </div>
+          </div>
 
-          <label>File path (optional, GCS / HDFS / local)</label>
-          <input
-            type="text"
-            value={value.path || ""}
-            onChange={(e) => handleFieldChange("path", e.target.value)}
-            placeholder="e.g. gs://bucket/trades_a.parquet"
-          />
-        </>
+          <div className="scf-field">
+            <label className="scf-label">File path (optional)</label>
+            <input
+              type="text"
+              className="scf-input"
+              placeholder="e.g. gs://bucket/trades_a.parquet or /data/trades.csv"
+              value={source.path || ""}
+              onChange={(e) => handleFieldChange("path", e.target.value)}
+            />
+            <div className="scf-helper">
+              Optional: GCS / HDFS / local path if you want backend to fetch
+              directly.
+            </div>
+          </div>
+
+          <div className="scf-field">
+            <label className="scf-label">Format (optional)</label>
+            <input
+              type="text"
+              className="scf-input"
+              placeholder="csv, json, parquet, avro, excel"
+              value={source.format || ""}
+              onChange={(e) => handleFieldChange("format", e.target.value)}
+            />
+          </div>
+        </div>
       );
     }
 
     if (t === "bigquery") {
       return (
-        <>
-          <label>BigQuery table (dataset.table or project.dataset.table)</label>
-          <input
-            type="text"
-            value={value.table || ""}
-            onChange={(e) => {
-              handleFieldChange("table", e.target.value);
-              handleFieldChange("table_fqn", e.target.value);
-            }}
-            placeholder="project.dataset.table"
-          />
-          <label>Numeric columns (comma-separated)</label>
-          <input
-            type="text"
-            value={value.numeric_cols || ""}
-            onChange={(e) => handleFieldChange("numeric_cols", e.target.value)}
-            placeholder="amount, notional, pnl"
-          />
-          <label>Array columns (comma-separated)</label>
-          <input
-            type="text"
-            value={value.array_cols || ""}
-            onChange={(e) => handleFieldChange("array_cols", e.target.value)}
-            placeholder="tags, labels"
-          />
-        </>
+        <div className="scf-block">
+          <div className="scf-block-header">BigQuery configuration</div>
+
+          <div className="scf-field">
+            <label className="scf-label">Table (FQN)</label>
+            <input
+              type="text"
+              className="scf-input"
+              placeholder="project.dataset.table"
+              value={source.table || ""}
+              onChange={(e) => {
+                const val = e.target.value;
+                handleFieldChange("table", val);
+                handleFieldChange("table_fqn", val);
+              }}
+            />
+            <div className="scf-helper">
+              Fully-qualified BigQuery table name.
+            </div>
+          </div>
+
+          <div className="scf-field">
+            <label className="scf-label">Numeric columns (comma-separated)</label>
+            <input
+              type="text"
+              className="scf-input"
+              placeholder="amount, notional, pnl"
+              value={source.numeric_cols || ""}
+              onChange={(e) => handleFieldChange("numeric_cols", e.target.value)}
+            />
+          </div>
+
+          <div className="scf-field">
+            <label className="scf-label">Array columns (comma-separated)</label>
+            <input
+              type="text"
+              className="scf-input"
+              placeholder="tags, labels"
+              value={source.array_cols || ""}
+              onChange={(e) => handleFieldChange("array_cols", e.target.value)}
+            />
+          </div>
+        </div>
       );
     }
 
     if (t === "oracle" || t === "postgres" || t === "hive") {
       return (
-        <>
-          <label>Host</label>
-          <input
-            type="text"
-            value={value.host || ""}
-            onChange={(e) => handleFieldChange("host", e.target.value)}
-            placeholder="db.host.internal"
-          />
+        <div className="scf-block">
+          <div className="scf-block-header">
+            {t === "oracle"
+              ? "Oracle configuration"
+              : t === "postgres"
+              ? "Postgres configuration"
+              : "Hive configuration"}
+          </div>
 
-          <label>Port</label>
-          <input
-            type="number"
-            value={value.port || ""}
-            onChange={(e) => handleFieldChange("port", Number(e.target.value))}
-          />
-
-          {t === "postgres" && (
-            <>
-              <label>Database</label>
+          <div className="scf-field scf-grid-2">
+            <div>
+              <label className="scf-label">Host</label>
               <input
                 type="text"
-                value={value.database || ""}
+                className="scf-input"
+                placeholder="db.host.internal"
+                value={source.host || ""}
+                onChange={(e) => handleFieldChange("host", e.target.value)}
+              />
+            </div>
+
+            <div>
+              <label className="scf-label">Port</label>
+              <input
+                type="number"
+                className="scf-input"
+                value={source.port || ""}
+                onChange={(e) =>
+                  handleFieldChange("port", Number(e.target.value || 0))
+                }
+              />
+            </div>
+          </div>
+
+          {t === "postgres" && (
+            <div className="scf-field">
+              <label className="scf-label">Database</label>
+              <input
+                type="text"
+                className="scf-input"
+                value={source.database || ""}
                 onChange={(e) =>
                   handleFieldChange("database", e.target.value)
                 }
               />
-            </>
+            </div>
           )}
 
           {t === "oracle" && (
-            <>
-              <label>Service name</label>
+            <div className="scf-field">
+              <label className="scf-label">Service name</label>
               <input
                 type="text"
-                value={value.service || ""}
+                className="scf-input"
+                value={source.service || ""}
                 onChange={(e) => handleFieldChange("service", e.target.value)}
               />
-            </>
+            </div>
           )}
 
           {t === "hive" && (
-            <>
-              <label>Database</label>
+            <div className="scf-field">
+              <label className="scf-label">Database</label>
               <input
                 type="text"
-                value={value.database || ""}
+                className="scf-input"
+                value={source.database || ""}
                 onChange={(e) =>
                   handleFieldChange("database", e.target.value)
                 }
               />
-            </>
+            </div>
           )}
 
-          <label>User</label>
-          <input
-            type="text"
-            value={value.user || ""}
-            onChange={(e) => handleFieldChange("user", e.target.value)}
-          />
+          <div className="scf-field scf-grid-2">
+            <div>
+              <label className="scf-label">User</label>
+              <input
+                type="text"
+                className="scf-input"
+                value={source.user || ""}
+                onChange={(e) => handleFieldChange("user", e.target.value)}
+              />
+            </div>
+            <div>
+              <label className="scf-label">Password</label>
+              <input
+                type="password"
+                className="scf-input"
+                value={source.password || ""}
+                onChange={(e) =>
+                  handleFieldChange("password", e.target.value)
+                }
+              />
+            </div>
+          </div>
 
-          <label>Password</label>
-          <input
-            type="password"
-            value={value.password || ""}
-            onChange={(e) => handleFieldChange("password", e.target.value)}
-          />
+          <div className="scf-field">
+            <label className="scf-label">Table</label>
+            <input
+              type="text"
+              className="scf-input"
+              placeholder="TRADES or schema.TRADES"
+              value={source.table || ""}
+              onChange={(e) => handleFieldChange("table", e.target.value)}
+            />
+          </div>
 
-          <label>Table</label>
-          <input
-            type="text"
-            value={value.table || ""}
-            onChange={(e) => handleFieldChange("table", e.target.value)}
-            placeholder="TRADES or schema.TRADES"
-          />
-
-          <label>Columns (optional, comma-separated)</label>
-          <input
-            type="text"
-            value={value.columns || ""}
-            onChange={(e) => handleFieldChange("columns", e.target.value)}
-            placeholder="trade_id, amount, trade_date"
-          />
-        </>
+          <div className="scf-field">
+            <label className="scf-label">
+              Columns (optional, comma-separated)
+            </label>
+            <input
+              type="text"
+              className="scf-input"
+              placeholder="trade_id, amount, trade_date"
+              value={source.columns || ""}
+              onChange={(e) => handleFieldChange("columns", e.target.value)}
+            />
+          </div>
+        </div>
       );
     }
 
@@ -214,35 +305,28 @@ export default function SourceConfigForm({ label, value, onChange, onFileChange 
   };
 
   return (
-    <div
-      style={{
-        border: "1px solid #ccc",
-        padding: 12,
-        borderRadius: 8,
-        marginBottom: 16,
-      }}
-    >
-      <h4>{label}</h4>
-      <label>Source Type</label>
-      <select value={value?.type || ""} onChange={handleTypeChange}>
-        <option value="">Select source type</option>
-        {SOURCE_TYPES.map((s) => (
-          <option key={s.value} value={s.value}>
-            {s.label}
-          </option>
-        ))}
-      </select>
-
-      <div
-        style={{
-          marginTop: 8,
-          display: "flex",
-          flexDirection: "column",
-          gap: 8,
-        }}
-      >
-        {renderFieldsForType()}
+    <div className="scf-root">
+      <div className="scf-header-row">
+        <h4 className="scf-title">{label}</h4>
       </div>
+
+      <div className="scf-field">
+        <label className="scf-label">Source type</label>
+        <select
+          className="scf-input scf-select"
+          value={source.type || ""}
+          onChange={handleTypeChange}
+        >
+          <option value="">Select source type</option>
+          {SOURCE_TYPES.map((s) => (
+            <option key={s.value} value={s.value}>
+              {s.label}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {renderFieldsForType()}
     </div>
   );
 }
