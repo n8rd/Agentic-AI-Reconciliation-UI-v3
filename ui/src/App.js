@@ -20,7 +20,7 @@ export default function App() {
 
   return (
     <div style={{ padding: 20 }}>
-      <h2>Agentic AI Reconciliation</h2>
+      <h2>Agentic AI Reconciliation v3</h2>
 
       {/* Step 1: configuration + initial run */}
       <ReconcileForm setResult={handleReconcileResult} />

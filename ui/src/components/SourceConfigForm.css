@@ -1,26 +1,12 @@
+/* frontend/src/components/SourceConfigForm.css */
+
 .scf-root {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
-/* Header */
-
-.scf-header-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 4px;
-}
-
-.scf-title {
-  margin: 0;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--text-main);
-}
-
-/* Fields */
+/* Generic fields */
 
 .scf-field {
   display: flex;
@@ -30,30 +16,30 @@
 
 .scf-label {
   font-size: 11px;
-  color: var(--text-main);
+  color: #e5e7eb;
   margin-bottom: 3px;
 }
 
 .scf-input {
-  background: #ffffff;
+  background: #020617;
   border-radius: 8px;
-  border: 1px solid var(--border-soft);
+  border: 1px solid #1f2937;
   padding: 6px 8px;
   font-size: 12px;
-  color: var(--text-main);
+  color: #e5e7eb;
   outline: none;
   box-sizing: border-box;
 }
 
 .scf-input:focus {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 2px var(--accent-light);
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 1px rgba(79, 70, 229, 0.45);
 }
 
 .scf-select {
   appearance: none;
-  background-image: linear-gradient(45deg, transparent 50%, var(--text-light) 50%),
-    linear-gradient(135deg, var(--text-light) 50%, transparent 50%);
+  background-image: linear-gradient(45deg, transparent 50%, #9ca3af 50%),
+    linear-gradient(135deg, #9ca3af 50%, transparent 50%);
   background-position: calc(100% - 12px) 10px, calc(100% - 8px) 10px;
   background-size: 5px 5px, 5px 5px;
   background-repeat: no-repeat;
@@ -67,30 +53,28 @@
 
 .scf-helper {
   font-size: 10px;
-  color: var(--text-light);
+  color: #6b7280;
   margin-top: 3px;
 }
 
 /* Blocks */
 
 .scf-block {
-  background: var(--bg-panel);
-  border-radius: var(--radius-md);
-  border: 1px solid var(--border-soft);
+  background: rgba(15, 23, 42, 0.7);
+  border-radius: 10px;
+  border: 1px solid #1f2937;
   padding: 8px 9px;
   margin-top: 4px;
-  box-shadow: var(--shadow-soft);
 }
 
 .scf-block-file {
-  background: #fefce8;
-  border-color: #fde047;
+  background: rgba(23, 37, 84, 0.7);
 }
 
 .scf-block-header {
   font-size: 11px;
   font-weight: 600;
-  color: var(--text-main);
+  color: #e5e7eb;
   margin-bottom: 6px;
 }
 
