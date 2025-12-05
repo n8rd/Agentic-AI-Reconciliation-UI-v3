@@ -28,20 +28,10 @@
   margin-bottom: 6px;
 }
 
-/* Give the first field (Source type) a special blue card */
-
-.scf-field:first-of-type {
-  background: var(--accent-light);
-  border-radius: 10px;
-  border: 2px solid var(--border-strong);
-  padding: 8px 9px;
-}
-
 .scf-label {
   font-size: 11px;
   color: var(--text-main);
   margin-bottom: 3px;
-  font-weight: 600;
 }
 
 .scf-input {
