@@ -57,13 +57,14 @@
 }
 
 .rf-dataset-title {
-  font-size: 13px;
-  font-weight: 600;
+  font-size: 14px;       /* was 13px */
+  font-weight: 700;      /* bold */
+  color: #f9fafb;        /* bright white */
 }
 
 .rf-dataset-subtitle {
-  font-size: 11px;
-  color: #9ca3af;
+  font-size: 12px;       /* was 11px */
+  color: #d1d5db;        /* lighter gray for better contrast */
 }
 
 /* Thresholds panel */
@@ -83,8 +84,9 @@
 }
 
 .rf-threshold-title {
-  font-size: 13px;
-  font-weight: 600;
+  font-size: 14px;       /* was 13px */
+  font-weight: 700;      /* bold */
+  color: #f9fafb;        /* bright white */
 }
 
 .rf-threshold-subtitle {
