@@ -20,7 +20,7 @@
 
 .rf-dataset-card {
   background: var(--bg-panel);
-  border: 1px solid var(--border-strong);
+  border: 1px solid var(--border-soft);
   border-radius: var(--radius-lg);
   padding: 12px 14px;
   box-shadow: var(--shadow-soft);
@@ -51,7 +51,7 @@
 
 .rf-dataset-badge-b {
   background: #f3e8ff;
-  color: #7c3aed;
+  color: #9333ea;
 }
 
 .rf-dataset-title {
@@ -69,7 +69,7 @@
 .rf-threshold-panel {
   background: var(--bg-panel);
   border-radius: var(--radius-lg);
-  border: 1px solid var(--border-strong);
+  border: 1px solid var(--border-soft);
   padding: 12px 14px;
   box-shadow: var(--shadow-soft);
 }
@@ -117,7 +117,7 @@
 .rf-input {
   background: #ffffff;
   border-radius: 8px;
-  border: 1px solid var(--border-strong);
+  border: 1px solid var(--border-soft);
   padding: 6px 8px;
   font-size: 12px;
   color: var(--text-main);
@@ -161,7 +161,7 @@
 /* Run button */
 
 .rf-run-btn {
-  border: 1px solid #1d4ed8;
+  border: none;
   border-radius: 999px;
   padding: 8px 16px;
   font-size: 12px;
@@ -170,22 +170,22 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  background: var(--accent);
   color: #ffffff;
-  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.35);
+  box-shadow: var(--shadow-soft);
   transition: background 0.15s ease, transform 0.15s ease,
     box-shadow 0.15s ease;
 }
 
 .rf-run-btn:hover {
-  background: linear-gradient(135deg, #1d4ed8, #1d4ed8);
+  background: #1d4ed8;
   transform: translateY(-1px);
-  box-shadow: 0 10px 24px rgba(37, 99, 235, 0.45);
+  box-shadow: 0 8px 18px rgba(37, 99, 235, 0.25);
 }
 
 .rf-run-btn-disabled {
   cursor: default;
-  opacity: 0.75;
+  opacity: 0.7;
   box-shadow: none;
   transform: none;
 }
@@ -196,7 +196,7 @@
   width: 12px;
   height: 12px;
   border-radius: 999px;
-  border: 2px solid rgba(239, 246, 255, 0.9);
+  border: 2px solid rgba(249, 250, 251, 0.9);
   border-top-color: transparent;
   animation: rf-spin 0.9s linear infinite;
 }

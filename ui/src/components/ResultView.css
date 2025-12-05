@@ -1,6 +1,6 @@
 .rv-card {
   background: var(--bg-panel);
-  border: 1px solid var(--border-strong);
+  border: 1px solid var(--border-soft);
   border-radius: var(--radius-lg);
   padding: 16px 18px;
   box-shadow: var(--shadow-card);
@@ -104,8 +104,8 @@
 }
 
 .rv-copy-button {
-  border: 1px solid var(--border-soft);
-  background: #e5edff;
+  border: none;
+  background: #e5e7eb;
   color: var(--text-main);
   font-size: 11px;
   padding: 4px 9px;
@@ -114,13 +114,13 @@
 }
 
 .rv-copy-button:hover {
-  background: #dbeafe;
+  background: #d1d5db;
 }
 
 /* Code blocks */
 
 .rv-code-block {
-  background: #eff4ff;
+  background: #f9fafb;
   border-radius: 10px;
   padding: 8px 10px;
   font-size: 11px;
@@ -146,7 +146,7 @@
 .rv-metric-card {
   background: var(--bg-panel-soft);
   border-radius: 10px;
-  border: 1px solid var(--border-strong);
+  border: 1px solid var(--border-soft);
   padding: 8px 9px;
 }
 
@@ -172,10 +172,9 @@
 
 .rv-table-wrapper {
   border-radius: 10px;
-  border: 1px solid var(--border-strong);
+  border: 1px solid var(--border-soft);
   overflow: auto;
   max-height: 220px;
-  background: #f1f5ff;
 }
 
 .rv-table {
@@ -185,7 +184,7 @@
 }
 
 .rv-table thead {
-  background: #e5edff;
+  background: #f3f4f6;
   position: sticky;
   top: 0;
   z-index: 1;
@@ -204,7 +203,7 @@
 }
 
 .rv-table tbody tr:nth-child(even) {
-  background: #f3f4ff;
+  background: #f9fafb;
 }
 
 /* Raw JSON toggle */
