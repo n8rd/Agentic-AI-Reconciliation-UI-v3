@@ -1,11 +1,9 @@
-/* frontend/src/components/ResultView.css */
-
 .rv-card {
-  background: linear-gradient(145deg, #020617 0%, #020617 60%, #020617 100%);
-  border-radius: 16px;
-  border: 1px solid #1f2937;
+  background: var(--bg-panel);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-lg);
   padding: 16px 18px;
-  box-shadow: 0 18px 35px rgba(0, 0, 0, 0.55);
+  box-shadow: var(--shadow-card);
   min-height: 260px;
   display: flex;
   flex-direction: column;
@@ -27,7 +25,7 @@
   width: 40px;
   height: 40px;
   border-radius: 999px;
-  background: rgba(30, 64, 175, 0.2);
+  background: var(--accent-light);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -47,17 +45,18 @@
   margin: 0;
   font-size: 15px;
   font-weight: 600;
+  color: var(--text-main);
 }
 
 .rv-subtitle {
   margin: 0 0 8px;
   font-size: 12px;
-  color: #9ca3af;
+  color: var(--text-muted);
 }
 
 .rv-text {
   font-size: 13px;
-  color: #d1d5db;
+  color: var(--text-main);
   margin: 4px 0 0;
 }
 
@@ -74,15 +73,15 @@
 }
 
 .rv-pill-success {
-  background: rgba(16, 185, 129, 0.1);
-  color: #6ee7b7;
-  border-color: rgba(16, 185, 129, 0.2);
+  background: #dcfce7;
+  color: #166534;
+  border-color: #bbf7d0;
 }
 
 .rv-pill-warning {
-  background: rgba(245, 158, 11, 0.1);
-  color: #facc15;
-  border-color: rgba(245, 158, 11, 0.25);
+  background: #fef3c7;
+  color: #92400e;
+  border-color: #fde68a;
 }
 
 /* Sections */
@@ -101,12 +100,13 @@
   margin: 0 0 4px;
   font-size: 13px;
   font-weight: 500;
+  color: var(--text-main);
 }
 
 .rv-copy-button {
   border: none;
-  background: rgba(31, 41, 55, 0.8);
-  color: #e5e7eb;
+  background: #e5e7eb;
+  color: var(--text-main);
   font-size: 11px;
   padding: 4px 9px;
   border-radius: 999px;
@@ -114,20 +114,20 @@
 }
 
 .rv-copy-button:hover {
-  background: rgba(55, 65, 81, 0.9);
+  background: #d1d5db;
 }
 
 /* Code blocks */
 
 .rv-code-block {
-  background: #020617;
+  background: #f9fafb;
   border-radius: 10px;
   padding: 8px 10px;
   font-size: 11px;
   line-height: 1.5;
-  color: #e5e7eb;
+  color: var(--text-main);
   overflow: auto;
-  border: 1px solid #1f2937;
+  border: 1px solid var(--border-soft);
 }
 
 .rv-raw-block {
@@ -144,27 +144,27 @@
 }
 
 .rv-metric-card {
-  background: rgba(15, 23, 42, 0.9);
+  background: var(--bg-panel-soft);
   border-radius: 10px;
-  border: 1px solid #1f2937;
+  border: 1px solid var(--border-soft);
   padding: 8px 9px;
 }
 
 .rv-metric-label {
   font-size: 11px;
-  color: #9ca3af;
+  color: var(--text-muted);
   margin-bottom: 2px;
 }
 
 .rv-metric-value {
   font-size: 15px;
   font-weight: 600;
-  color: #e5e7eb;
+  color: var(--text-main);
 }
 
 .rv-metric-helper {
   font-size: 10px;
-  color: #6b7280;
+  color: var(--text-light);
   margin-top: 2px;
 }
 
@@ -172,7 +172,7 @@
 
 .rv-table-wrapper {
   border-radius: 10px;
-  border: 1px solid #1f2937;
+  border: 1px solid var(--border-soft);
   overflow: auto;
   max-height: 220px;
 }
@@ -184,7 +184,7 @@
 }
 
 .rv-table thead {
-  background: #020617;
+  background: #f3f4f6;
   position: sticky;
   top: 0;
   z-index: 1;
@@ -193,17 +193,17 @@
 .rv-table th,
 .rv-table td {
   padding: 6px 8px;
-  border-bottom: 1px solid #1f2937;
+  border-bottom: 1px solid var(--border-soft);
   text-align: left;
-  color: #e5e7eb;
+  color: var(--text-main);
 }
 
 .rv-table tbody tr:nth-child(odd) {
-  background: rgba(15, 23, 42, 0.9);
+  background: #ffffff;
 }
 
 .rv-table tbody tr:nth-child(even) {
-  background: rgba(15, 23, 42, 0.7);
+  background: #f9fafb;
 }
 
 /* Raw JSON toggle */
@@ -215,7 +215,7 @@
 .rv-raw-toggle {
   border: none;
   background: transparent;
-  color: #9ca3af;
+  color: var(--text-light);
   text-decoration: underline;
   font-size: 11px;
   cursor: pointer;
