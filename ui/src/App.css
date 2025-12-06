@@ -27,7 +27,7 @@ body {
 /* Root layout */
 
 .app-root {
-  min-height: 100vh;
+  min-height: 100vh;.rf-dataset-title
   display: flex;
   flex-direction: column;
 }
@@ -136,6 +136,25 @@ body {
   color: var(--text-muted);
 }
 
+/* Dataset A title */
+.rf-dataset-card:first-of-type .rf-dataset-title {
+    color: #ffffff !important;
+}
+
+/* Dataset B title ) */
+.rf-dataset-card:nth-of-type(2) .rf-dataset-title {
+    color: #ffffff !important;
+}
+
+/* “No reconciliation run yet” title  */
+.rv-empty-card h3 {
+    color: #ffffff !important;
+}
+
+/* The subtitle under it */
+.rv-empty-card p {
+    color: #ffffff !important;
+}
 /* Responsive */
 
 @media (max-width: 900px) {
@@ -153,3 +172,5 @@ body {
     align-self: flex-end;
   }
 }
+
+
