@@ -233,7 +233,7 @@ export default function ResultView({ result }) {
       {result.sql && (
         <div className="rv-section">
           <div className="rv-section-header">
-            <h3 className="rv-section-title">Generated reconciliation SQL</h3>
+            <h3 className="rv-section-title" >Generated reconciliation SQL</h3>
             <button
               type="button"
               className="rv-copy-button"

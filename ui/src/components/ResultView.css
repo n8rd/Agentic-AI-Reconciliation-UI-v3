@@ -48,6 +48,7 @@
   margin: 0;
   font-size: 15px;
   font-weight: 600;
+  color=#f9fafb
 }
 
 .rv-subtitle {
@@ -90,6 +91,7 @@
 
 .rv-section {
   margin-top: 12px;
+  color: #f9fafb;
 }
 
 .rv-section-header {
@@ -102,6 +104,7 @@
   margin: 0 0 4px;
   font-size: 13px;
   font-weight: 500;
+  color=#f9fafb
 }
 
 .rv-copy-button {
@@ -126,13 +129,14 @@
   padding: 8px 10px;
   font-size: 11px;
   line-height: 1.5;
-  color: #e5e7eb;
+  color: #f9fafb;
   overflow: auto;
   border: 1px solid #1f2937;
 }
 
 .rv-raw-block {
   max-height: 220px;
+  color: #f9fafb;
 }
 
 /* Metrics */
@@ -211,6 +215,7 @@
 
 .rv-raw-section {
   margin-top: 12px;
+  color: #f9fafb;
 }
 
 .rv-raw-toggle {
