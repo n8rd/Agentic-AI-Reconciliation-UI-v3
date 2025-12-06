@@ -201,6 +201,16 @@
   animation: rf-spin 0.9s linear infinite;
 }
 
+/* Force Dataset A / Dataset B titles to white */
+.rf-dataset-title {
+  color: #ffffff !important;
+}
+
+/* Optional: the small subtitle under them */
+.rf-dataset-subtitle {
+  color: #ffffff !important;
+}
+
 @keyframes rf-spin {
   to {
     transform: rotate(360deg);

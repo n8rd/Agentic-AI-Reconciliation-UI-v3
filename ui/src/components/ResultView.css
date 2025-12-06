@@ -222,6 +222,16 @@
   padding: 0;
 }
 
+/* "No reconciliation run yet" text */
+.rv-empty-card h3 {
+  color: #ffffff !important;
+}
+
+/* The explanatory line under it */
+.rv-empty-card p {
+  color: #ffffff !important;
+}
+
 /* Responsive */
 
 @media (max-width: 900px) {

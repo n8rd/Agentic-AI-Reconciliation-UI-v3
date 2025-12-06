@@ -155,6 +155,7 @@ body {
 .rv-empty-card p {
     color: #ffffff !important;
 }
+
 /* Responsive */
 
 @media (max-width: 900px) {
